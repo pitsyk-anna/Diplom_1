@@ -3,6 +3,7 @@ package praktikum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,20 +30,27 @@ public class BurgerParameterizedTest {
                 {100.5f, 200.5f, 300.5f}
         };
     }
-    @Test
-        public void getPriceTest() {
-        Bun bun = new Bun("Тестовая булка", bunPrice);
-        Ingredient sauce = new Ingredient(IngredientType.SAUCE, "Тестовый соус", ingredientSaucePrice);
-        Ingredient filling = new Ingredient(IngredientType.FILLING, "Тестовая начинка", ingredientFillingPrice);
 
-        Burger burger= new Burger();
-        burger.setBuns(bun);
-        burger.addIngredient(sauce);
-        burger.addIngredient(filling);
+    @Test
+    public void getPriceTest() {
+        //создание мок
+        Bun bunMock = Mockito.mock(Bun.class);
+        Ingredient sauceMock = Mockito.mock(Ingredient.class);
+        Ingredient fillingMock = Mockito.mock(Ingredient.class);
+        //настройка моков
+        Mockito.when(bunMock.getPrice()).thenReturn(bunPrice);
+        Mockito.when(sauceMock.getPrice()).thenReturn(ingredientSaucePrice);
+        Mockito.when(fillingMock.getPrice()).thenReturn(ingredientFillingPrice);
+
+        //передаем моки в объект
+        Burger burger = new Burger();
+        burger.setBuns(bunMock);
+        burger.addIngredient(sauceMock);
+        burger.addIngredient(fillingMock);
 
         float expected = bunPrice * 2 + ingredientSaucePrice + ingredientFillingPrice;
         float actual = burger.getPrice();
 
         assertEquals("Ожидаемый и фактический результаты не совпадают", expected, actual, 0.01f);
-        }
+    }
 }
